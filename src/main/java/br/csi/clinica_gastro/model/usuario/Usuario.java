@@ -42,6 +42,12 @@ public class Usuario {
 
     private String permissao;
 
+    public Usuario( String email, String senha, String permissao){
+        this.email = email;
+        this.senha = senha;
+        this.permissao = permissao;
+    }
+
 
     @Enumerated(EnumType.STRING)
     private Status status;

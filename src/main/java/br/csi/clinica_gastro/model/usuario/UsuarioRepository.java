@@ -16,4 +16,6 @@ public interface UsuarioRepository extends JpaRepository<Usuario,Integer> {
 
     @Query(value = "SELECT * FROM usuarios", nativeQuery = true)
     List<UsuarioDTO> findAllDTO();
+
+    public Usuario findByEmail(String email);
 }
