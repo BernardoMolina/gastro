@@ -6,6 +6,7 @@ import br.csi.clinica_gastro.model.endoscopia.SalvarEndoscopiaDTO;
 import br.csi.clinica_gastro.model.endoscopia.TodasEndoscopiasDTO;
 import br.csi.clinica_gastro.service.EndoscopiaService;
 import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -30,7 +31,7 @@ public class EndoscopiaController {
 
     @PostMapping
     @Transactional
-    public ResponseEntity salvar(@RequestBody Endoscopia endoscopia, UriComponentsBuilder uriComponentsBuilder){
+    public ResponseEntity salvar(@RequestBody @Valid Endoscopia endoscopia, UriComponentsBuilder uriComponentsBuilder){
 
         this.service.salvar(endoscopia);
         URI uri = uriComponentsBuilder.path("/endoscopia/{idend}").buildAndExpand(endoscopia.getIdend()).toUri();

@@ -19,8 +19,8 @@ public class MedicoService {
         this.repository.save(medico);
     }
 
-    public Medico findById(int idmed) {
-        return this.repository.findById(idmed).get();
+    public MedicoDTO findById(int idmed) {
+        return this.repository.findById(idmed);
     }
 
     public SalvarMedicoDTO salvarMedicoDTO(int id) {

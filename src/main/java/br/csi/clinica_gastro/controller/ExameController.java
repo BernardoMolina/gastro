@@ -5,6 +5,7 @@ import br.csi.clinica_gastro.model.exame.ExameDTO;
 import br.csi.clinica_gastro.model.exame.SalvarExameDTO;
 import br.csi.clinica_gastro.service.ExameService;
 import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -29,7 +30,7 @@ public class ExameController {
 
     @PostMapping
     @Transactional
-    public ResponseEntity salvar(@RequestBody Exame exame, UriComponentsBuilder uriComponentsBuilder){
+    public ResponseEntity salvar(@RequestBody @Valid Exame exame, UriComponentsBuilder uriComponentsBuilder){
 
         this.service.salvar(exame);
         URI uri = uriComponentsBuilder.path("/exame/{idex}").buildAndExpand(exame.getIdex()).toUri();

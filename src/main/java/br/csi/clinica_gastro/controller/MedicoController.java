@@ -7,6 +7,7 @@ import br.csi.clinica_gastro.model.medico.MedicoDTO;
 import br.csi.clinica_gastro.model.medico.SalvarMedicoDTO;
 import br.csi.clinica_gastro.service.MedicoService;
 import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -25,13 +26,13 @@ public class MedicoController {
     }
 
     @GetMapping("/{idmed}")
-    public Medico medico(@PathVariable int idmed){
+    public MedicoDTO medico(@PathVariable int idmed){
         return  this.service.findById(idmed);
     }
 
     @PostMapping
     @Transactional
-    public ResponseEntity salvar(@RequestBody  Medico medico, UriComponentsBuilder uriComponentsBuilder){
+    public ResponseEntity salvar(@RequestBody @Valid Medico medico, UriComponentsBuilder uriComponentsBuilder){
 
         this.service.salvar(medico);
         URI uri = uriComponentsBuilder.path("/medico/{idmed}").buildAndExpand(medico.getIdmed()).toUri();

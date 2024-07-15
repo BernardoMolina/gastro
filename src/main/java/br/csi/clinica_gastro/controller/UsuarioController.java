@@ -10,6 +10,7 @@ import br.csi.clinica_gastro.model.usuario.UsuarioDTO;
 import br.csi.clinica_gastro.service.UsuarioService;
 import jakarta.transaction.Transactional;
 
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -34,7 +35,7 @@ public class UsuarioController {
 
     @PostMapping
     @Transactional
-    public ResponseEntity salvar(@RequestBody Usuario usuario, UriComponentsBuilder uriComponentsBuilder){
+    public ResponseEntity salvar(@RequestBody @Valid Usuario usuario, UriComponentsBuilder uriComponentsBuilder){
 
         this.service.salvar(usuario);
         URI uri = uriComponentsBuilder.path("/usuario/{idus}").buildAndExpand(usuario.getIdus()).toUri();

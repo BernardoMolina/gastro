@@ -2,6 +2,7 @@ package br.csi.clinica_gastro.model.endoscopia;
 
 import br.csi.clinica_gastro.model.exame.Exame;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,8 +24,10 @@ public class Endoscopia {
 
     private String esofago;
 
+    @NotBlank
     private String conclusao;
 
+    @NotBlank
     private String descricao;
     @OneToOne
     @JoinColumn(name = "idexame")

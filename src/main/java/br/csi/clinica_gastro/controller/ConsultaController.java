@@ -5,6 +5,7 @@ import br.csi.clinica_gastro.model.consulta.ConsultaDTO;
 import br.csi.clinica_gastro.model.consulta.SalvarConsultaDTO;
 import br.csi.clinica_gastro.service.ConsultaService;
 import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -29,7 +30,7 @@ public class ConsultaController {
 
     @PostMapping
     @Transactional
-    public ResponseEntity salvar(@RequestBody Consulta consulta, UriComponentsBuilder uriComponentsBuilder){
+    public ResponseEntity salvar(@RequestBody @Valid Consulta consulta, UriComponentsBuilder uriComponentsBuilder){
 
         this.service.salvar(consulta);
         URI uri = uriComponentsBuilder.path("/consulta/{idcon}").buildAndExpand(consulta.getIdcon()).toUri();

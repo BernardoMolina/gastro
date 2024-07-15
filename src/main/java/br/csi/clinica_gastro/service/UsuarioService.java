@@ -9,6 +9,7 @@ import br.csi.clinica_gastro.model.usuario.Usuario;
 import br.csi.clinica_gastro.model.usuario.UsuarioDTO;
 import br.csi.clinica_gastro.model.usuario.UsuarioRepository;
 
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,8 +22,10 @@ public class UsuarioService {
         this.repository = repository;
     }
     public void salvar(Usuario usuario){
+        usuario.setSenha(new BCryptPasswordEncoder().encode(usuario.getSenha()));
         this.repository.save(usuario);
     }
+
 
     public Usuario findById(int idus){
         return  this.repository.findById(idus).get();

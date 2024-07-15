@@ -5,6 +5,7 @@ import br.csi.clinica_gastro.model.medico.Medico;
 import br.csi.clinica_gastro.model.paciente.Paciente;
 import jakarta.persistence.*;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -35,6 +36,7 @@ public class Consulta {
     @DateTimeFormat
     private String dataa;
 
+    @NotBlank
     private String observacao;
 
     private String prescricao;

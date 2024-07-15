@@ -6,6 +6,7 @@ import br.csi.clinica_gastro.model.manometria.SalvarManometriaDTO;
 import br.csi.clinica_gastro.model.manometria.TodasManometriasDTO;
 import br.csi.clinica_gastro.service.ManometriaService;
 import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -30,7 +31,7 @@ public class ManometriaController {
 
     @PostMapping
     @Transactional
-    public ResponseEntity salvar(@RequestBody Manometria manometria, UriComponentsBuilder uriComponentsBuilder){
+    public ResponseEntity salvar(@RequestBody @Valid Manometria manometria, UriComponentsBuilder uriComponentsBuilder){
 
         this.service.salvar(manometria);
         URI uri = uriComponentsBuilder.path("/manometria/{idman}").buildAndExpand(manometria.getIdman()).toUri();

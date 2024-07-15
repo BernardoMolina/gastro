@@ -6,6 +6,7 @@ import br.csi.clinica_gastro.model.colangioressonancia.SalvarColangioressonancia
 import br.csi.clinica_gastro.model.colangioressonancia.TodasColangioressonanciasDTO;
 import br.csi.clinica_gastro.service.ColangioressonanciaService;
 import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -30,7 +31,7 @@ public class ColangioressonanciaController {
 
     @PostMapping
     @Transactional
-    public ResponseEntity salvar(@RequestBody Colangioressonancia colangioressonancia, UriComponentsBuilder uriComponentsBuilder){
+    public ResponseEntity salvar(@RequestBody @Valid Colangioressonancia colangioressonancia, UriComponentsBuilder uriComponentsBuilder){
 
         this.service.salvar(colangioressonancia);
         URI uri = uriComponentsBuilder.path("/colangioressonancia/{idcol}").buildAndExpand(colangioressonancia.getIdcol()).toUri();

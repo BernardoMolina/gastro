@@ -9,6 +9,7 @@ import br.csi.clinica_gastro.model.usuario.Usuario;
 import br.csi.clinica_gastro.service.PacienteService;
 import jakarta.transaction.Transactional;
 
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -33,7 +34,7 @@ public class PacienteController {
 
     @PostMapping
     @Transactional
-    public ResponseEntity salvar(@RequestBody  Paciente paciente, UriComponentsBuilder uriComponentsBuilder){
+    public ResponseEntity salvar(@RequestBody @Valid Paciente paciente, UriComponentsBuilder uriComponentsBuilder){
 
         this.service.salvar(paciente);
         URI uri = uriComponentsBuilder.path("/paciente/{idpac}").buildAndExpand(paciente.getIdpac()).toUri();

@@ -5,10 +5,13 @@ import br.csi.clinica_gastro.model.exame.Exame;
 import br.csi.clinica_gastro.model.usuario.Usuario;
 import jakarta.persistence.*;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.format.annotation.DateTimeFormat;
+
 import java.util.List;
 
 
@@ -40,14 +43,14 @@ public class Paciente {
 
     private String cirurgia;
 
-
+    @DateTimeFormat
     private String data_de_nasc;
 
     private String alergia;
 
     private String historico_familiar;
 
-
+    @NotBlank
     private String sexo;
 
     private String imunizacao;

@@ -12,6 +12,10 @@ import java.util.List;
 
 public interface MedicoRepository extends JpaRepository<Medico, Integer> {
 
+
+    @Query(value = "select * from medicos where idmed=:idmed;", nativeQuery = true)
+    MedicoDTO findById(@Param("idmed") int idmed);
+
     @Query(value = "SELECT * \n" +
             "FROM medicos where medicos.idmed =:idmed", nativeQuery = true)
     SalvarMedicoDTO salvarMedico(@Param("idmed") int idmed);
