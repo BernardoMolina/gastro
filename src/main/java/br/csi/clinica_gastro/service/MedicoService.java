@@ -2,6 +2,8 @@ package br.csi.clinica_gastro.service;
 
 
 import br.csi.clinica_gastro.model.medico.*;
+import br.csi.clinica_gastro.model.usuario.Usuario;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,7 +17,12 @@ public class MedicoService {
         this.repository = repository;
     }
 
+
+
     public void salvar(Medico medico) {
+        
+        Usuario u = medico.getUsuario();
+        u.setSenha(new BCryptPasswordEncoder().encode(u.getSenha()));
         this.repository.save(medico);
     }
 
@@ -31,7 +38,22 @@ public class MedicoService {
     public void atualizar(Medico medico) {
         Medico p = this.repository.getReferenceById(medico.getIdmed());
         p.setRegistro(medico.getRegistro());
-        
+
+        // Atualizar dados do usuário
+        if (medico.getUsuario() != null) {
+            Usuario u = p.getUsuario();
+            u.setNome_completo(medico.getUsuario().getNome_completo());
+            u.setEmail(medico.getUsuario().getEmail());
+            u.setCpf(medico.getUsuario().getCpf());
+            u.setTelefone(medico.getUsuario().getTelefone());
+            u.setPermissao(medico.getUsuario().getPermissao());
+            u.setStatus(medico.getUsuario().getStatus());
+
+            // Só atualiza a senha se foi informada
+            if (medico.getUsuario().getSenha() != null && !medico.getUsuario().getSenha().isEmpty()) {
+                u.setSenha(new BCryptPasswordEncoder().encode(medico.getUsuario().getSenha()));
+            }
+        }
     }
 
     public void excluir(int idmed) {

@@ -19,12 +19,24 @@ public interface EndoscopiaRepository extends JpaRepository<Endoscopia, Integer>
     @Query(value = "SELECT * FROM endoscopia,exames where endoscopia.idexame=exames.idex", nativeQuery = true)
     List<EndoscopiaDTO> findAllDTO();
 
-    @Query(value = "SELECT duodeno,esofago,descricao,conclusao,e.idend, u.nome_completo AS nomemedico, p.nome_completo AS nomepaciente, ex.dataa AS dataexame\n" +
-            "FROM endoscopia e\n" +
-            "JOIN exames ex ON e.idexame = ex.idex\n" +
-            "JOIN medicos m ON ex.idmedico = m.idmed\n" +
-            "JOIN usuarios u ON m.iduser = u.idus\n" +
-            "JOIN pacientes pa ON ex.idpaciente = pa.idpac\n" +
-            "JOIN usuarios p ON pa.iduser = p.idus;", nativeQuery = true)
+    @Query(value = "SELECT en.idend AS idend, " +
+            "en.idexame AS idexame, " +
+            "e.idpaciente AS idpaciente, " +
+            "e.idmedico AS idmedico, " +
+            "en.esofago AS esofago, " +
+            "en.duodeno AS duodeno, " +
+            "en.conclusao AS conclusao, " +
+            "en.descricao AS descricao, " +
+            "e.dataa AS dataexame, " +
+            "um.nome_completo AS nomemedico, " +
+            "up.nome_completo AS nomepaciente " +
+            "FROM endoscopia en " +
+            "JOIN exames e ON en.idexame = e.idex " +
+            "JOIN medicos m ON e.idmedico = m.idmed " +
+            "JOIN usuarios um ON m.iduser = um.idus " +
+            "JOIN pacientes p ON e.idpaciente = p.idpac " +
+            "JOIN usuarios up ON p.iduser = up.idus", nativeQuery = true)
     List<TodasEndoscopiasDTO> findAllEndoscopiasDTO();
+
+
 }

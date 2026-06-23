@@ -1,0 +1,5 @@
+ALTER TABLE usuarios ALTER COLUMN telefone TYPE VARCHAR(15);
+
+ALTER TABLE exames
+ALTER COLUMN dataa TYPE TIMESTAMP
+USING dataa::timestamp;

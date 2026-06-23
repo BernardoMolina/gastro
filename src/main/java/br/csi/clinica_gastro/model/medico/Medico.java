@@ -23,11 +23,13 @@ public class Medico {
     @Column(name = "idmed")
     private int idmed;
 
+
+
     @NotBlank
     @Column(name = "registro", nullable = false)
     private String registro;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "iduser", referencedColumnName = "idus")
     private Usuario usuario;
 }

@@ -40,8 +40,11 @@ public class UsuarioService {
         u.setEmail(usuario.getEmail());
         u.setPermissao(usuario.getPermissao());
         u.setStatus(usuario.getStatus());
-        u.setSenha(usuario.getSenha());
         u.setTelefone(usuario.getTelefone());
+
+        if (usuario.getSenha() != null && !usuario.getSenha().isEmpty()) {
+            u.setSenha(new BCryptPasswordEncoder().encode(usuario.getSenha()));
+        }
     }
 
     public void excluir(int idus){

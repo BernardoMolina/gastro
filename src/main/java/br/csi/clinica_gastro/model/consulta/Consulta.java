@@ -12,6 +12,10 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
 
+
+
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "consultas")
 @Getter
@@ -34,7 +38,7 @@ public class Consulta {
 
 
     @DateTimeFormat
-    private String dataa;
+    private LocalDateTime dataa;
 
     @NotBlank
     private String observacao;

@@ -14,6 +14,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "exames")
 @Getter
@@ -37,7 +39,7 @@ public class Exame {
 
 
     @DateTimeFormat
-    private String dataa;
+    private LocalDateTime dataa;
 
     @OneToOne(mappedBy = "exame")
     private Colangioressonancia colangioressonancia;

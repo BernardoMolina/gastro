@@ -58,7 +58,7 @@ public class Paciente {
     @OneToMany(mappedBy = "paciente")
     private List<Consulta> consultas;
 
-    @OneToOne
-    @JoinColumn(name = "iduser")
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "iduser", referencedColumnName = "idus")
     private Usuario usuario;
 }

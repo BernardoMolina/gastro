@@ -36,10 +36,11 @@ public class UsuarioController {
     @PostMapping
     @Transactional
     public ResponseEntity salvar(@RequestBody @Valid Usuario usuario, UriComponentsBuilder uriComponentsBuilder){
-
+        System.out.println("chegou aqui");
         this.service.salvar(usuario);
         URI uri = uriComponentsBuilder.path("/usuario/{idus}").buildAndExpand(usuario.getIdus()).toUri();
         SalvarUsuarioDTO usuariodto = this.service.salvarUsuarioDTO(usuario.getIdus());
+        System.out.println(usuariodto);
         return ResponseEntity.created(uri).body(usuariodto);
     }
 

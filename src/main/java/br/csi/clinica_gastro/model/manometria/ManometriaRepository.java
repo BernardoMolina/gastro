@@ -19,12 +19,21 @@ public interface ManometriaRepository extends JpaRepository<Manometria, Integer>
     @Query(value = "SELECT * FROM manometria,exames where manometria.idexame=exames.idex", nativeQuery = true)
     List<ManometriaDTO> findAllDTO();
 
-    @Query(value = "SELECT sumario,resultados,conclusao,e.idman, u.nome_completo AS nomemedico, p.nome_completo AS nomepaciente, ex.dataa AS dataexame\n" +
-            "FROM manometria e\n" +
-            "JOIN exames ex ON e.idexame = ex.idex\n" +
-            "JOIN medicos m ON ex.idmedico = m.idmed\n" +
-            "JOIN usuarios u ON m.iduser = u.idus\n" +
-            "JOIN pacientes pa ON ex.idpaciente = pa.idpac\n" +
-            "JOIN usuarios p ON pa.iduser = p.idus;", nativeQuery = true)
+    @Query(value = "SELECT ma.idman AS idman, " +
+            "ma.idexame AS idexame, " +
+            "e.idpaciente AS idpaciente, " +
+            "e.idmedico AS idmedico, " +
+            "ma.sumario AS sumario, " +
+            "ma.conclusao AS conclusao, " +
+            "ma.resultados AS resultados, " +
+            "e.dataa AS dataexame, " +
+            "um.nome_completo AS nomemedico, " +
+            "up.nome_completo AS nomepaciente " +
+            "FROM manometria ma " +
+            "JOIN exames e ON ma.idexame = e.idex " +
+            "JOIN medicos m ON e.idmedico = m.idmed " +
+            "JOIN usuarios um ON m.iduser = um.idus " +
+            "JOIN pacientes p ON e.idpaciente = p.idpac " +
+            "JOIN usuarios up ON p.iduser = up.idus", nativeQuery = true)
     List<TodasManometriasDTO> findAllManometriasDTO();
 }

@@ -51,8 +51,9 @@ public class Usuario {
     @Column(name = "telefone", nullable = false, unique = true, length = 14)
     private String telefone;
 
-    @NotBlank
-    @Column(name = "senha", nullable = false)
+
+    //@Size(max=50)
+    @Column(name = "senha", nullable = false,length = 50)
     private String senha;
 
     @Column(name = "permissao")

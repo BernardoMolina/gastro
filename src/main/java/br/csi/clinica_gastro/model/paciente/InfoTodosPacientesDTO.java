@@ -2,6 +2,8 @@ package br.csi.clinica_gastro.model.paciente;
 
 public interface InfoTodosPacientesDTO {
 
+    String getIdpac();        
+    String getIduser();
 
 
     String getNome_completo();
