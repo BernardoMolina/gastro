@@ -66,29 +66,28 @@ projetos/
    spring.datasource.username=${SPRING_DATASOURCE_USERNAME:postgres}
    spring.datasource.password=${SPRING_DATASOURCE_PASSWORD:postgres}
    spring.datasource.driver-class-name=org.postgresql.Driver
-   spring.jpa.hibernate.ddl-auto=${SPRING_JPA_HIBERNATE_DDL_AUTO:update}
-   spring.jpa.database-platform=${SPRING_JPA_DATABASE_PLATFORM:org.hibernate.dialect.PostgreSQLDialect}
    server.port=${SERVER_PORT:8080}
    ```
 
    A sintaxe `${VARIAVEL:valor_padrao}` faz o Spring usar a variável de ambiente
    quando disponível (dentro do Docker) e o valor padrão quando rodar localmente.
    Apenas a `url`, `username` e `password` precisam virar variáveis — o restante
-   (incluindo `context-path` e logs) pode permanecer fixo como já está.
+   (context-path, logs) pode permanecer fixo como já está.
 
-3. **Driver do PostgreSQL.** Confirme que o `pom.xml` tem a dependência:
+   > **Atenção (Flyway):** o projeto usa **Flyway** para versionar o schema do
+   > banco (as migrations em `src/main/resources/db/migration` rodam no startup).
+   > Por isso **não** defina `spring.jpa.hibernate.ddl-auto=update` — deixe o
+   > Flyway ser o único responsável pelo schema, evitando conflito/drift. O
+   > `docker-compose.yml` já segue essa regra (não injeta `ddl-auto`).
 
-   ```xml
-   <dependency>
-       <groupId>org.postgresql</groupId>
-       <artifactId>postgresql</artifactId>
-       <scope>runtime</scope>
-   </dependency>
-   ```
+3. **Driver do PostgreSQL.** Já presente no seu `pom.xml` (`org.postgresql`),
+   nenhuma alteração necessária.
 
-4. **Healthcheck (opcional, recomendado).** O `docker-compose.yml` verifica a
-   saúde do backend em `/clinica-gastro/actuator/health` (note o context-path).
-   Para habilitar, adicione ao `pom.xml`:
+4. **Healthcheck (opcional).** O projeto **não** inclui o
+   `spring-boot-starter-actuator`, então o `docker-compose.yml` vem **sem**
+   healthcheck no backend (o frontend chama a API pelo navegador em runtime e
+   não precisa esperar o backend ficar "healthy"). Se quiser um healthcheck,
+   adicione ao `pom.xml`:
 
    ```xml
    <dependency>
@@ -97,9 +96,7 @@ projetos/
    </dependency>
    ```
 
-   Se preferir não usar o Actuator, edite o healthcheck no `docker-compose.yml`
-   trocando a linha `test:` por:
-   `test: ["CMD-SHELL", "wget -qO- http://localhost:8080/clinica-gastro/login || exit 0"]`
+   e reative o bloco `healthcheck:` que está comentado no `docker-compose.yml`.
 
 ## 5. Configuração (variáveis de ambiente)
 

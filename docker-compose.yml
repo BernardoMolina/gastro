@@ -36,20 +36,20 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/teste4
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: postgres
-      # Dialeto/driver do PostgreSQL
-      SPRING_JPA_DATABASE_PLATFORM: org.hibernate.dialect.PostgreSQLDialect
-      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      # O schema é gerenciado pelo Flyway (migrations), então NÃO definimos
+      # ddl-auto=update aqui para evitar que o Hibernate altere o schema em
+      # paralelo e cause drift. O Flyway roda as migrations no startup.
       SERVER_PORT: 8080
     ports:
       - "8080:8080"
-    healthcheck:
-      # Atenção ao context-path /clinica-gastro definido no application.properties.
-      # Se o Actuator não estiver no projeto, troque por:
-      #   wget -qO- http://localhost:8080/clinica-gastro/login || exit 0
-      test: ["CMD-SHELL", "wget -qO- http://localhost:8080/clinica-gastro/actuator/health || exit 1"]
-      interval: 15s
-      timeout: 5s
-      retries: 10
+    # Sem healthcheck: o projeto não inclui o spring-boot-starter-actuator,
+    # então não há um endpoint /health confiável. Caso queira um healthcheck,
+    # basta adicionar o Actuator ao pom.xml e reativar o bloco abaixo:
+    #   healthcheck:
+    #     test: ["CMD-SHELL", "wget -qO- http://localhost:8080/clinica-gastro/actuator/health || exit 1"]
+    #     interval: 15s
+    #     timeout: 5s
+    #     retries: 10
 
   # ─── Frontend Next.js ───────────────────────────────────────────────────────--
   frontend:
@@ -64,9 +64,10 @@ services:
         NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:8080/clinica-gastro}
     container_name: clinica_frontend
     restart: unless-stopped
+    # O front chama a API pelo navegador em runtime, então basta aguardar o
+    # backend iniciar (service_started) — não precisa esperar ficar "healthy".
     depends_on:
-      backend:
-        condition: service_healthy
+      - backend
     environment:
       NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:8080/clinica-gastro}
     ports:
