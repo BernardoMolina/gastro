@@ -6,7 +6,7 @@ WORKDIR /app
 COPY mvnw pom.xml ./
 COPY .mvn .mvn
 RUN chmod +x mvnw && ./mvnw dependency:go-offline -q
-
+#
 # Copia o código-fonte e compila
 COPY src ./src
 RUN ./mvnw package -DskipTests -q
