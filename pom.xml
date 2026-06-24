@@ -94,7 +94,7 @@
 							<artifactId>lombok</artifactId>
 						</exclude>
 					</excludes>
-
+					<encoding>UTF-8</encoding>
 				</configuration>
 			</plugin>
 		</plugins>

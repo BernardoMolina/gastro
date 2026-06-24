@@ -1,15 +1,16 @@
 # ─── Estágio 1: build com Maven ───────────────────────────────────────────────
-FROM eclipse-temurin:17-jdk-alpine AS builder
+# Imagem oficial do Maven com JDK 17 — não depende do Maven Wrapper (.mvn/mvnw)
+FROM maven:3.9-eclipse-temurin-17 AS builder
 WORKDIR /app
+ENV LANG=C.UTF-8
+ENV LC_ALL=C.UTF-8
+# Copia o pom antes do código para aproveitar o cache de dependências
+COPY pom.xml ./
+RUN mvn dependency:resolve
 
-# Copia o wrapper e o pom antes do código para aproveitar cache de dependências
-COPY mvnw pom.xml ./
-COPY .mvn .mvn
-RUN chmod +x mvnw && ./mvnw dependency:go-offline -q
-##
-# Copia o código-fonte e compila
+# Copia o código-fonte e compila (--no-transfer-progress reduz spam mas mantém erros visíveis)
 COPY src ./src
-RUN ./mvnw package -DskipTests -q
+RUN mvn package -DskipTests --no-transfer-progress
 
 # ─── Estágio 2: runtime ───────────────────────────────────────────────────────
 FROM eclipse-temurin:17-jre-alpine AS runner
