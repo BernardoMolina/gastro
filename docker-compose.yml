@@ -21,9 +21,9 @@ services:
   # ─── Backend Spring Boot ──────────────────────────────────────────────────────
   backend:
     build:
-      # Caminho do repositório do backend (clonado ao lado deste projeto).
-      # Ajuste via variável BACKEND_PATH no arquivo .env, se necessário.
-      context: ${BACKEND_PATH:-../clinica-backend}
+      # O docker-compose.yml está na raiz do repositório do backend,
+      # então "." aponta para o próprio repo do back.
+      context: .
       dockerfile: Dockerfile.backend
     container_name: clinica_backend
     restart: unless-stopped
@@ -54,7 +54,15 @@ services:
   # ─── Frontend Next.js ───────────────────────────────────────────────────────--
   frontend:
     build:
-      context: .
+      # Aponta para o repositório do frontend clonado ao lado deste (backend).
+      # Estrutura esperada:
+      #   pasta-pai/
+      #     clinica-backend/   <- você está aqui (docker-compose.yml)
+      #     clinica-frontend/  <- repo do front (ajuste o nome se necessário)
+      #
+      # Para sobrescrever o caminho, crie um arquivo .env na raiz do backend:
+      #   FRONTEND_PATH=../nome-real-do-repo-front
+      context: ${FRONTEND_PATH:-../clinica-frontend}
       dockerfile: Dockerfile
       args:
         # IMPORTANTE: o front chama a API pelo NAVEGADOR, então a URL precisa ser

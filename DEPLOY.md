@@ -34,25 +34,29 @@ Como frontend e backend ficam em repositórios separados, clone os dois lado a l
 
 ```
 projetos/
-├── clinica-frontend/     <- este repositório (contém Dockerfile, docker-compose.yml, DEPLOY.md)
-│   ├── Dockerfile
-│   ├── Dockerfile.backend <- copie este arquivo para o repositório do backend
-│   ├── docker-compose.yml
-│   └── ...
-└── clinica-backend/      <- repositório do Spring Boot
-    ├── pom.xml
-    ├── mvnw / .mvn
-    ├── src/
-    └── Dockerfile.backend <- cole aqui (copiado do frontend)
+├── clinica-backend/      <- repositório do Spring Boot (docker-compose.yml fica AQUI)
+│   ├── pom.xml
+│   ├── mvnw / .mvn
+│   ├── Dockerfile.backend
+│   ├── docker-compose.yml  <- execute daqui
+│   ├── DEPLOY.md
+│   └── src/
+└── clinica-frontend/     <- repositório do Next.js
+    ├── Dockerfile
+    └── ...
 ```
 
-> Se você usar outro nome/caminho para a pasta do backend, ajuste a variável
-> `BACKEND_PATH` (veja a seção 5).
+> O `docker-compose.yml` aponta para o frontend via `../clinica-frontend`.
+> Se o nome/caminho do repo do frontend for diferente, crie um arquivo `.env`
+> na raiz do backend com:
+> ```
+> FRONTEND_PATH=../nome-real-do-repo-frontend
+> ```
 
 ## 4. Preparando o backend
 
-1. **Copie o `Dockerfile.backend`** deste repositório para a **raiz do
-   repositório do backend** (onde está o `pom.xml`).
+1. **`Dockerfile.backend` e `docker-compose.yml`** já estão na raiz do
+   repositório do backend. Nenhuma cópia necessária.
 
 2. **Garanta que o `application.properties` leia variáveis de ambiente.** O
    `docker-compose.yml` injeta as configurações de banco via variáveis. Confirme
@@ -118,7 +122,7 @@ atualize também as variáveis `SPRING_DATASOURCE_*` do serviço `backend`.
 
 ## 6. Subindo a aplicação
 
-Na pasta do frontend (onde está o `docker-compose.yml`):
+Na **pasta do backend** (onde está o `docker-compose.yml`):
 
 ```bash
 # Constrói as imagens e sobe os três serviços
@@ -128,8 +132,8 @@ docker compose up --build
 A ordem de inicialização é controlada automaticamente:
 
 1. `db` sobe e aguarda ficar saudável (`pg_isready`).
-2. `backend` só inicia depois que o banco está pronto.
-3. `frontend` só inicia depois que o backend está saudável.
+2. `backend` só inicia depois que o banco está pronto (Flyway roda as migrations no startup).
+3. `frontend` inicia após o backend subir.
 
 Para rodar em segundo plano (modo destacado):
 
