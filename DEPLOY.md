@@ -45,82 +45,7 @@ projetos/
     ├── Dockerfile
     └── ...
 ```
-
-> O `docker-compose.yml` aponta para o frontend via `../clinica-frontend`.
-> Se o nome/caminho do repo do frontend for diferente, crie um arquivo `.env`
-> na raiz do backend com:
-> ```
-> FRONTEND_PATH=../nome-real-do-repo-frontend
-> ```
-
-## 4. Preparando o backend
-
-1. **`Dockerfile.backend` e `docker-compose.yml`** já estão na raiz do
-   repositório do backend. Nenhuma cópia necessária.
-
-2. **Garanta que o `application.properties` leia variáveis de ambiente.** O
-   `docker-compose.yml` injeta as configurações de banco via variáveis. Confirme
-   que o arquivo `src/main/resources/application.properties` está assim:
-
-   ```properties
-   spring.application.name=clinica-gastro
-   server.servlet.context-path=/clinica-gastro
-
-   spring.datasource.url=${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/teste4}
-   spring.datasource.username=${SPRING_DATASOURCE_USERNAME:postgres}
-   spring.datasource.password=${SPRING_DATASOURCE_PASSWORD:postgres}
-   spring.datasource.driver-class-name=org.postgresql.Driver
-   server.port=${SERVER_PORT:8080}
-   ```
-
-   A sintaxe `${VARIAVEL:valor_padrao}` faz o Spring usar a variável de ambiente
-   quando disponível (dentro do Docker) e o valor padrão quando rodar localmente.
-   Apenas a `url`, `username` e `password` precisam virar variáveis — o restante
-   (context-path, logs) pode permanecer fixo como já está.
-
-   > **Atenção (Flyway):** o projeto usa **Flyway** para versionar o schema do
-   > banco (as migrations em `src/main/resources/db/migration` rodam no startup).
-   > Por isso **não** defina `spring.jpa.hibernate.ddl-auto=update` — deixe o
-   > Flyway ser o único responsável pelo schema, evitando conflito/drift. O
-   > `docker-compose.yml` já segue essa regra (não injeta `ddl-auto`).
-
-3. **Driver do PostgreSQL.** Já presente no seu `pom.xml` (`org.postgresql`),
-   nenhuma alteração necessária.
-
-4. **Healthcheck (opcional).** O projeto **não** inclui o
-   `spring-boot-starter-actuator`, então o `docker-compose.yml` vem **sem**
-   healthcheck no backend (o frontend chama a API pelo navegador em runtime e
-   não precisa esperar o backend ficar "healthy"). Se quiser um healthcheck,
-   adicione ao `pom.xml`:
-
-   ```xml
-   <dependency>
-       <groupId>org.springframework.boot</groupId>
-       <artifactId>spring-boot-starter-actuator</artifactId>
-   </dependency>
-   ```
-
-   e reative o bloco `healthcheck:` que está comentado no `docker-compose.yml`.
-
-## 5. Configuração (variáveis de ambiente)
-
-As configurações já têm valores padrão no `docker-compose.yml`. Para
-personalizar, crie um arquivo `.env` na mesma pasta do `docker-compose.yml`:
-
-```env
-# Caminho do repositório do backend (relativo ao docker-compose.yml)
-BACKEND_PATH=../clinica-backend
-
-# URL pública da API (acessada pelo navegador), incluindo o context-path.
-# Em produção, troque pelo domínio real, ex.: https://api.suaclinica.com/clinica-gastro
-NEXT_PUBLIC_API_URL=http://localhost:8080/clinica-gastro
-```
-
-As credenciais do banco (`POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRES_DB`)
-estão definidas no `docker-compose.yml` e podem ser alteradas lá. Se mudar,
-atualize também as variáveis `SPRING_DATASOURCE_*` do serviço `backend`.
-
-## 6. Subindo a aplicação
+## 4. Subindo a aplicação
 
 Na **pasta do backend** (onde está o `docker-compose.yml`):
 
@@ -141,7 +66,7 @@ Para rodar em segundo plano (modo destacado):
 docker compose up --build -d
 ```
 
-## 7. Acessando o sistema
+## 5. Acessando o sistema
 
 | Recurso          | URL                                      |
 |------------------|------------------------------------------|
@@ -149,37 +74,11 @@ docker compose up --build -d
 | API (backend)    | http://localhost:8080/clinica-gastro     |
 | Banco PostgreSQL | localhost:5432 (db: `teste4`)            |
 
-## 8. Comandos úteis
 
-```bash
-# Ver logs de todos os serviços
-docker compose logs -f
 
-# Ver logs de um serviço específico
-docker compose logs -f backend
+## 6. Usuarios : TODAS AS SENHAS SAO 123456
 
-# Parar os serviços (mantém os dados do banco)
-docker compose down
+- **Secretaria:** usuario5@example.com -- usuario6@example.com
+- **Medico:** usuario1@example.com -- usuario2@example.com
+- **Paciente:** usuario3@example.com -- usuario4@example.com
 
-# Parar e APAGAR os dados do banco (volume)
-docker compose down -v
-
-# Reconstruir apenas o frontend
-docker compose up --build frontend
-```
-
-## 9. Observações importantes
-
-- **Primeira secretária:** se a rota `POST /usuario` exigir o cargo SECRETARIA,
-  não será possível criar o primeiro usuário pela API. Insira a primeira
-  secretária diretamente no banco (via SQL) ou por um script de seed.
-
-- **Persistência:** os dados do PostgreSQL ficam no volume `db_data` e
-  sobrevivem a `docker compose down`. Use `docker compose down -v` apenas se
-  quiser zerar o banco.
-
-- **CORS:** garanta que o backend permita requisições vindas de
-  `http://localhost:3000` (configuração de CORS no Spring Security).
-
-- **Produção:** em um servidor real, troque `NEXT_PUBLIC_API_URL` pelo domínio
-  público da API e configure HTTPS (ex.: via proxy reverso Nginx ou Traefik).
